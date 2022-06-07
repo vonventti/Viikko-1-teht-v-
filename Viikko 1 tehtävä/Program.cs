@@ -80,11 +80,13 @@ namespace Viikko_1_tehtävä
             {
                 Console.WriteLine("\n" + t.ID + " " + t.title + " " + t.description + " " + t.estimatedTimeToMaster + " " + t.timeSpent + " " + t.source + " " + t.startDate + " " + t.completionDate);
             }
+
+            Console.WriteLine();
         }
 
 
-   
 
+        // Testi
 
 
         public class Topic
@@ -98,6 +100,10 @@ namespace Viikko_1_tehtävä
             public string startDate { get; set; }
             public bool inProgress { get; set; }
             public string completionDate { get; set; }
+
+            public void getTitle() {
+                Console.WriteLine(title);
+            }
 
             //public Topic(int ID, string title, string description, string estimatedTimeToMaster, double timeSpent, string source, DateTime startDate, bool inProgress, DateTime completionDate)
             //{
