@@ -15,11 +15,11 @@ namespace Viikko_1_tehtävä
             teksiTiedosto(topic);
         }
 
-        // Luokka Topic sekä parametrit
+        // Luokka Topic sekä argumentit
 
         public class Topic
         {
-            // Parametrit
+            // Argumentit
             public List<Topic> Topics { get; set; }
             public int ID { get; set; }
             public string Title { get; set; }
@@ -39,53 +39,46 @@ namespace Viikko_1_tehtävä
 
             Topic topic = new Topic();
 
-            int ID;
-
+      
             Console.WriteLine("Enter an ID");
-            bool idValid = int.TryParse(Console.ReadLine(), out ID)
-                && ID > 0;
-
-            while (!idValid)
+            var idEntered = Console.ReadLine();
+            int ID;
+            while (!int.TryParse(idEntered, out ID))
             {
-                Console.WriteLine("Please enter a valid ID (number)");
-                idValid = int.TryParse(Console.ReadLine(), out ID)
-                    && ID > 0;
+                Console.WriteLine("This is not a valid ID. Please enter a number as ID");
+                idEntered = Console.ReadLine();
             }
-            topic.ID = Convert.ToInt32(idValid);
+            topic.ID = Convert.ToInt32(ID);
+
 
             Console.WriteLine("Enter a title");
             topic.Title = Console.ReadLine();
 
+
             Console.WriteLine("Enter a description");
             topic.Description = Console.ReadLine();
 
-            double EstimatedTimeToMaster;
 
             Console.WriteLine("Enter time to complete");
-            bool valid = double.TryParse(Console.ReadLine(), out EstimatedTimeToMaster)
-                && EstimatedTimeToMaster > 0;
-
-            while (!valid)
+            var timeToCompleteEntered = Console.ReadLine();
+            double EstimatedTimeToMaster;
+            while (!double.TryParse(timeToCompleteEntered, out EstimatedTimeToMaster))
             {
-                Console.WriteLine("Please enter a valid time as a double, i.e. a number or number as xx,xx?");
-                valid = double.TryParse(Console.ReadLine(), out EstimatedTimeToMaster)
-                    && EstimatedTimeToMaster > 0;
+                Console.WriteLine("This is not a valid time. Please enter a number as time to complete");
+                timeToCompleteEntered = Console.ReadLine();
             }
-            topic.EstimatedTimeToMaster = Convert.ToDouble(valid);
+            topic.EstimatedTimeToMaster = Convert.ToDouble(EstimatedTimeToMaster);
 
-            double TimeSpent;
 
             Console.WriteLine("Enter time spent");
-            bool validTime = double.TryParse(Console.ReadLine(), out TimeSpent)
-                && TimeSpent > 0;
-
-            while (!validTime)
+            double TimeSpent;
+            var timeSpentEntered = Console.ReadLine();
+            while (!double.TryParse(timeSpentEntered, out TimeSpent))
             {
-                Console.WriteLine("Please enter a valid time as a double, i.e. a number or number as xx,xx?");
-                validTime = double.TryParse(Console.ReadLine(), out TimeSpent)
-                    && TimeSpent > 0;
+                Console.WriteLine("This is not a valid time. Please enter a number as time spent");
+                timeSpentEntered = Console.ReadLine();
             }
-            topic.TimeSpent = Convert.ToDouble(validTime);
+            topic.TimeSpent = Convert.ToDouble(TimeSpent);
 
             Console.WriteLine("Enter a source");
             topic.Source = Console.ReadLine();
@@ -144,9 +137,9 @@ namespace Viikko_1_tehtävä
         {
             string Path = @"C:\Users\Anders\textfile.txt";
 
-            using (TextWriter tw = new StreamWriter(Path))
+            using (StreamWriter sw = File.AppendText(Path))
             {
-                tw.WriteLine(string.Format("ID: {0}  \nTitle: {1}  \nDecription: {2}  \nTime to Complete: {3}  \nTime spent: {4}  \nSource: {5}  \nStart date: {6}  \nTopic ongoing: {7}",
+                sw.WriteLine(string.Format("ID: {0}  \nTitle: {1}  \nDecription: {2}  \nTime to Complete: {3}  \nTime spent: {4}  \nSource: {5}  \nStart date: {6}  \nTopic ongoing: {7}",
                     topic.ID.ToString(),
                     topic.Title,
                     topic.Description,
@@ -157,9 +150,10 @@ namespace Viikko_1_tehtävä
                     topic.InProgress.ToString()));
                     if (topic.InProgress == false)
                     {
-                    tw.WriteLine("Completion date: " + topic.CompletionDate);
-                    tw.WriteLine("The topic lasted: " + (topic.CompletionDate - topic.StartDate).TotalDays + " days");
-                }
+                    sw.WriteLine("Completion date: " + topic.CompletionDate);
+                    sw.WriteLine("The topic lasted: " + (topic.CompletionDate - topic.StartDate).TotalDays + " days");
+                    }
+                   sw.WriteLine("-----------------------------------------------------------------------------------------");
             }   
         }
         }
