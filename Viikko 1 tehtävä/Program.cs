@@ -11,31 +11,32 @@ namespace Viikko_1_tehtävä
         static void Main(string[] args)
         {
 
-
-            int ID, TimeToMaster, TimeSpent;
+            double TimeToMaster;
+            int Id, TimeSpent;
             string Title, Description, Source, inProg;
-            DateTime StartLearningDate;
+            DateTime StartLearningDate, CompletionDate;
             bool InProgress;
 
 
 
             using (LearningDiaryContext conn = new LearningDiaryContext())
             {
+                // ClassLibrary käytetään tässä 1
                 Console.WriteLine("Jos haluat syöttää uuden topicin, paina 1");
-                Console.WriteLine("Jos haluat etsiä topicin ID:n tai Titlen perusteella, paina 2");
+                Console.WriteLine("Jos haluat etsiä topicin Id:n tai Titlen perusteella, paina 2");
                 Console.WriteLine("Jos haluat poistaa topicin, paina 3");
-                Console.WriteLine("Jos haluat päivittää topicin tietoja ID:n tai Titlen perusteella, paina 4");
+                Console.WriteLine("Jos haluat päivittää topicin tietoja Id:n tai Titlen perusteella, paina 4");
                 Console.WriteLine("Jos haluat nähdä kaikki syötetyt topicit, paina 5");
                 var syöte = Console.ReadLine();
                 if (syöte == "1")
                 {
-                    Console.WriteLine("Enter an ID");
-                    var idEntered = Console.ReadLine();
-                    while (!int.TryParse(idEntered, out ID))
-                    {
-                        Console.WriteLine("This is not a valid ID. Please enter a number as ID");
-                        idEntered = Console.ReadLine();
-                    }
+                    //Console.WriteLine("Enter an Id");
+                    //var IdEntered = Console.ReadLine();
+                    //while (!int.TryParse(IdEntered, out Id))
+                    //{
+                    //    Console.WriteLine("This is not a valId Id. Please enter a number as Id");
+                    //    IdEntered = Console.ReadLine();
+                    //}
 
 
 
@@ -49,19 +50,22 @@ namespace Viikko_1_tehtävä
 
                     Console.WriteLine("Enter time to complete");
                     var timeToCompleteEntered = Console.ReadLine();
-                    while (!int.TryParse(timeToCompleteEntered, out TimeToMaster))
+                    while (!double.TryParse(timeToCompleteEntered, out TimeToMaster))
                     {
-                        Console.WriteLine("This is not a valid time. Please enter a number as time to complete");
+                        Console.WriteLine("This is not a valId time. Please enter a number as time to complete");
                         timeToCompleteEntered = Console.ReadLine();
                     }
-                    TimeToMaster = Convert.ToInt32(TimeToMaster);
+                    TimeToMaster = Convert.ToDouble(TimeToMaster);
 
+
+
+                    // Muuta doubleksi
 
                     Console.WriteLine("Enter time spent");
                     var timeSpentEntered = Console.ReadLine();
                     while (!int.TryParse(timeSpentEntered, out TimeSpent))
                     {
-                        Console.WriteLine("This is not a valid time. Please enter a number as time spent");
+                        Console.WriteLine("This is not a valId time. Please enter a number as time spent");
                         timeSpentEntered = Console.ReadLine();
                     }
                     TimeSpent = Convert.ToInt32(TimeSpent);
@@ -83,6 +87,7 @@ namespace Viikko_1_tehtävä
                     InProgress = true;
                     if (inProg != null && inProg == "n")
                     {
+
                         InProgress = false;
                     }
                     else if (inProg != null && inProg == "y")
@@ -94,17 +99,25 @@ namespace Viikko_1_tehtävä
                         Console.WriteLine("Invalid value");
                     }
 
+                    //Console.WriteLine("Enter a completion date (dd/mm/yyyy)");
+                    //DateTime date1 = DateTime.Parse(Console.ReadLine());
+                    //string formatted1 = date1.ToString("dd-MM-yyyy");
+                    //DateTime CompletionDate1 = Convert.ToDateTime(formatted1);
+                    //CompletionDate = CompletionDate1;
+
+
 
                     Topic uusi = new Topic()
                     {
-                        ID = ID,
+                        //Id = Id,
                         Description = Description,
                         Title = Title,
                         TimeToMaster = TimeToMaster,
                         TimeSpent = TimeSpent,
                         Source = Source,
                         StartLearningDate = StartLearningDate,
-                        InProgress = InProgress
+                        InProgress = InProgress,
+                        //CompletionDate = CompletionDate
                     };
 
                     conn.Topics.Add(uusi);
@@ -112,7 +125,7 @@ namespace Viikko_1_tehtävä
 
                     foreach (var i in tulostus)
                     {
-                        Console.WriteLine("ID: {0}", i.ID);
+                        Console.WriteLine("Id: {0}", i.Id);
                         Console.WriteLine("Title: {0}", i.Title);
                         Console.WriteLine("Description: {0}", i.Description);
                         Console.WriteLine("Estimated time to complete: {0}", i.TimeToMaster);
@@ -123,27 +136,40 @@ namespace Viikko_1_tehtävä
 
                     }
 
+                    // ClassLibrary joka kertoo josko projekti on ajallaan tai jäänyt jälkeen
+
+                    if (Harjoitus.Class1.OverDueOrNot(StartLearningDate, TimeToMaster) == true)
+                    {
+                        Console.WriteLine("Projekti on myöhästynyt");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Projekti on ajallaan");
+                    }
+
+
+
                     conn.SaveChanges();
                 }
                 else if (syöte == "2")
                 {
-                    Console.WriteLine("Syötä '1' jos haluat etsiä ID:n perusteella, tai '2' jos haluat etsiä otsikon perusteella");
+                    Console.WriteLine("Syötä '1' jos haluat etsiä Id:n perusteella, tai '2' jos haluat etsiä otsikon perusteella");
                     string input = Console.ReadLine();
                     if (input == "1")
                     {
-                        Console.WriteLine("Enter ID to search");
-                        var idEntered = Console.ReadLine();
-                        while (!int.TryParse(idEntered, out ID))
+                        Console.WriteLine("Enter Id to search");
+                        var IdEntered = Console.ReadLine();
+                        while (!int.TryParse(IdEntered, out Id))
                         {
-                            Console.WriteLine("This is not a valid ID. Please enter a number as ID");
-                            idEntered = Console.ReadLine();
+                            Console.WriteLine("This is not a valId Id. Please enter a number as Id");
+                            IdEntered = Console.ReadLine();
                         }
                         var tulostus = conn.Topics.Select(t => t);
-                        var searchById = tulostus.Where(t => t.ID == ID);
+                        var searchById = tulostus.Where(t => t.Id == Id);
 
                         foreach (var i in searchById)
                         {
-                            Console.WriteLine("ID: {0}", i.ID);
+                            Console.WriteLine("Id: {0}", i.Id);
                             Console.WriteLine("Title: {0}", i.Title);
                             Console.WriteLine("Description: {0}", i.Description);
                             Console.WriteLine("Estimated time to complete: {0}", i.TimeToMaster);
@@ -165,7 +191,7 @@ namespace Viikko_1_tehtävä
 
                         foreach (var i in searchByTitle)
                         {
-                            Console.WriteLine("ID: {0}", i.ID);
+                            Console.WriteLine("Id: {0}", i.Id);
                             Console.WriteLine("Title: {0}", i.Title);
                             Console.WriteLine("Description: {0}", i.Description);
                             Console.WriteLine("Estimated time to complete: {0}", i.TimeToMaster);
@@ -182,18 +208,18 @@ namespace Viikko_1_tehtävä
                 }
                 else if (syöte == "3")
                 {
-                    Console.WriteLine("Syötä '1' jos haluat poistaa ID:n perusteella, tai '2' jos haluat poistaa otsikon perusteella");
+                    Console.WriteLine("Syötä '1' jos haluat poistaa Id:n perusteella, tai '2' jos haluat poistaa otsikon perusteella");
                     var input = Console.ReadLine();
                     if (input == "1")
                     {
-                        Console.WriteLine("Enter an ID");
-                        var idEntered = Console.ReadLine();
-                        while (!int.TryParse(idEntered, out ID))
+                        Console.WriteLine("Enter an Id");
+                        var IdEntered = Console.ReadLine();
+                        while (!int.TryParse(IdEntered, out Id))
                         {
-                            Console.WriteLine("This is not a valid ID. Please enter a number as ID");
-                            idEntered = Console.ReadLine();
+                            Console.WriteLine("This is not a valId Id. Please enter a number as Id");
+                            IdEntered = Console.ReadLine();
                         }
-                        conn.Remove(conn.Topics.Single(x => x.ID == ID));
+                        conn.Remove(conn.Topics.Single(x => x.Id == Id));
 
                     }
                     else if (input == "2")
@@ -211,34 +237,34 @@ namespace Viikko_1_tehtävä
                 }
                 else if (syöte == "4")
                 {
-                    Console.WriteLine("Syötä '1' jos haluat päivittää tietoja ID:n perusteella, tai '2' jos haluat päivittää tietoja otsikon perusteella");
+                    Console.WriteLine("Syötä '1' jos haluat päivittää tietoja Id:n perusteella, tai '2' jos haluat päivittää tietoja otsikon perusteella");
                     var input = Console.ReadLine();
                     if (input == "1")
                     {
-                        Console.WriteLine("Enter ID to search");
-                        var idEntered = Console.ReadLine();
+                        Console.WriteLine("Enter Id to search");
+                        var IdEntered = Console.ReadLine();
 
-                        while (!int.TryParse(idEntered, out ID))
+                        while (!int.TryParse(IdEntered, out Id))
                         {
-                            Console.WriteLine("This is not a valid ID. Please enter a number as ID");
-                            idEntered = Console.ReadLine();
+                            Console.WriteLine("This is not a valId Id. Please enter a number as Id");
+                            IdEntered = Console.ReadLine();
                         }
                         var tulostus = conn.Topics.Select(t => t);
-                        var query = tulostus.Where(c => c.ID == ID);
+                        var query = tulostus.Where(c => c.Id == Id);
 
                         var updateFields = query.First();
 
 
 
-                        //Console.WriteLine("Enter an ID");
-                        //idEntered = Console.ReadLine();
+                        //Console.WriteLine("Enter an Id");
+                        //IdEntered = Console.ReadLine();
 
-                        //while (!int.TryParse(idEntered, out ID))
+                        //while (!int.TryParse(IdEntered, out Id))
                         //{
-                        //    Console.WriteLine("This is not a valid ID. Please enter a number as ID");
-                        //    idEntered = Console.ReadLine();
+                        //    Console.WriteLine("This is not a valId Id. Please enter a number as Id");
+                        //    IdEntered = Console.ReadLine();
                         //}
-                        //updateFields.ID = ID;
+                        //updateFields.Id = Id;
 
 
                         Console.WriteLine("Enter a title");
@@ -252,19 +278,19 @@ namespace Viikko_1_tehtävä
                         Console.WriteLine("Enter time to complete");
                         var timeToCompleteEntered = Console.ReadLine();
 
-                        while (!int.TryParse(timeToCompleteEntered, out TimeToMaster))
+                        while (!double.TryParse(timeToCompleteEntered, out TimeToMaster))
                         {
-                            Console.WriteLine("This is not a valid time. Please enter a number as time to complete");
+                            Console.WriteLine("This is not a valId time. Please enter a number as time to complete");
                             timeToCompleteEntered = Console.ReadLine();
                         }
-                        updateFields.TimeToMaster = Convert.ToInt32(TimeToMaster);
+                        updateFields.TimeToMaster = Convert.ToDouble(TimeToMaster);
 
 
                         Console.WriteLine("Enter time spent");
                         var timeSpentEntered = Console.ReadLine();
                         while (!int.TryParse(timeSpentEntered, out TimeSpent))
                         {
-                            Console.WriteLine("This is not a valid time. Please enter a number as time spent");
+                            Console.WriteLine("This is not a valId time. Please enter a number as time spent");
                             timeSpentEntered = Console.ReadLine();
                         }
                         updateFields.TimeSpent = Convert.ToInt32(TimeSpent);
@@ -294,7 +320,7 @@ namespace Viikko_1_tehtävä
                         }
                         else
                         {
-                            Console.WriteLine("Invalid value");
+                            Console.WriteLine("InvalId value");
                         }
 
                         updateFields.InProgress = InProgress;
@@ -316,15 +342,15 @@ namespace Viikko_1_tehtävä
                         var updateFields = query.First();
 
 
-                        //Console.WriteLine("Enter an ID");
-                        //idEntered = Console.ReadLine();
+                        //Console.WriteLine("Enter an Id");
+                        //IdEntered = Console.ReadLine();
 
-                        //while (!int.TryParse(idEntered, out ID))
+                        //while (!int.TryParse(IdEntered, out Id))
                         //{
-                        //    Console.WriteLine("This is not a valid ID. Please enter a number as ID");
-                        //    idEntered = Console.ReadLine();
+                        //    Console.WriteLine("This is not a valId Id. Please enter a number as Id");
+                        //    IdEntered = Console.ReadLine();
                         //}
-                        //updateFields.ID = ID;
+                        //updateFields.Id = Id;
 
 
                         Console.WriteLine("Enter a title");
@@ -338,19 +364,19 @@ namespace Viikko_1_tehtävä
                         Console.WriteLine("Enter time to complete");
                         var timeToCompleteEntered = Console.ReadLine();
 
-                        while (!int.TryParse(timeToCompleteEntered, out TimeToMaster))
+                        while (!double.TryParse(timeToCompleteEntered, out TimeToMaster))
                         {
-                            Console.WriteLine("This is not a valid time. Please enter a number as time to complete");
+                            Console.WriteLine("This is not a valId time. Please enter a number as time to complete");
                             timeToCompleteEntered = Console.ReadLine();
                         }
-                        updateFields.TimeToMaster = Convert.ToInt32(TimeToMaster);
+                        updateFields.TimeToMaster = Convert.ToDouble(TimeToMaster);
 
 
                         Console.WriteLine("Enter time spent");
                         var timeSpentEntered = Console.ReadLine();
                         while (!int.TryParse(timeSpentEntered, out TimeSpent))
                         {
-                            Console.WriteLine("This is not a valid time. Please enter a number as time spent");
+                            Console.WriteLine("This is not a valId time. Please enter a number as time spent");
                             timeSpentEntered = Console.ReadLine();
                         }
                         updateFields.TimeSpent = Convert.ToInt32(TimeSpent);
@@ -380,7 +406,7 @@ namespace Viikko_1_tehtävä
                         }
                         else
                         {
-                            Console.WriteLine("Invalid value");
+                            Console.WriteLine("InvalId value");
                         }
 
                         updateFields.InProgress = InProgress;
@@ -401,7 +427,7 @@ namespace Viikko_1_tehtävä
 
                     foreach (var i in tulostus)
                     {
-                        Console.WriteLine("ID: {0}", i.ID);
+                        Console.WriteLine("Id: {0}", i.Id);
                         Console.WriteLine("Title: {0}", i.Title);
                         Console.WriteLine("Description: {0}", i.Description);
                         Console.WriteLine("Estimated time to complete: {0}", i.TimeToMaster);

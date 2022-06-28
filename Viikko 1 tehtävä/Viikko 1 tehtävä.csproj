@@ -15,4 +15,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Harjoitus">
+      <HintPath>..\..\Harjoitus\luokkakirjasto\Harjoitus\bin\Debug\netcoreapp3.1\Harjoitus.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

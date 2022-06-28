@@ -36,7 +36,9 @@ namespace Viikko_1_tehtävä.Models
             {
                 entity.ToTable("Topic");
 
-                entity.Property(e => e.ID).ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CompletionDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Description)
                     .HasMaxLength(255)
