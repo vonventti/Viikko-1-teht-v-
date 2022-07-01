@@ -23,7 +23,7 @@ namespace Viikko_1_tehtävä
                 double TimeToMaster;
                 int TimeSpent;
                 string Title, Description, Source, inProg;
-                DateTime StartLearningDate;
+                DateTime StartLearningDate, CompletionDate;
                 bool InProgress;
 
 
@@ -64,11 +64,14 @@ namespace Viikko_1_tehtävä
 
 
                 Console.WriteLine("Enter a start date (dd/mm/yyyy)");
-                DateTime date = DateTime.Parse(Console.ReadLine());
-                string formatted = date.ToString("dd-MM-yyyy");
+                var startLearning = Console.ReadLine();
+                while (!DateTime.TryParse(startLearning, out StartLearningDate))
+                {
+                    Console.WriteLine("This is not a valId date. Please enter a valid date in the format dd/mm/yyyy");
+                    startLearning = Console.ReadLine();
+                }
 
-                DateTime StartLearningDate1 = Convert.ToDateTime(formatted);
-                StartLearningDate = StartLearningDate1;
+                StartLearningDate = Convert.ToDateTime(startLearning);
 
 
                 Console.WriteLine("Is the Topic still ongoing? (y / n)");
@@ -78,68 +81,106 @@ namespace Viikko_1_tehtävä
                 {
 
                     InProgress = false;
+                    Console.WriteLine("Enter a completion date (dd/mm/yyyy)");
+                    var completion = Console.ReadLine();
+                    while (!DateTime.TryParse(completion, out StartLearningDate))
+                    {
+                        Console.WriteLine("This is not a valId date. Please enter a valid date in the format dd/mm/yyyy");
+                        completion = Console.ReadLine();
+                    }
+
+                    CompletionDate = Convert.ToDateTime(completion);
+
+                    Topic uusi1 = new Topic()
+                    {
+                        //Id = Id,
+                        Description = Description,
+                        Title = Title,
+                        TimeToMaster = TimeToMaster,
+                        TimeSpent = TimeSpent,
+                        Source = Source,
+                        StartLearningDate = StartLearningDate,
+                        InProgress = InProgress,
+                        CompletionDate = CompletionDate
+                    };
+
+                    //Console.WriteLine("Id: {0}", Id);
+                    Console.WriteLine("Title: {0}", Title);
+                    Console.WriteLine("Description: {0}", Description);
+                    Console.WriteLine("Estimated time to complete: {0}", TimeToMaster);
+                    Console.WriteLine("Time spent: {0}", TimeSpent);
+                    Console.WriteLine("Source: {0}", Source);
+                    Console.WriteLine("Start date: {0}", StartLearningDate);
+                    Console.WriteLine("Topic in progress: {0}", InProgress);
+                    Console.WriteLine("Completion date: {0}", CompletionDate);
+
+                    // ClassLibrary joka kertoo josko projekti on ajallaan tai jäänyt jälkeen
+
+                    if (Harjoitus.Class1.OverDueOrNot(StartLearningDate, TimeToMaster) == true)
+                    {
+                        Console.WriteLine("Projekti on myöhästynyt");
+                    }
+                    else
+                    {
+
+                        Console.WriteLine("Projekti on ajallaan");
+                    }
+
+                    conn.Topics.Add(uusi1);
+
+
                 }
                 else if (inProg != null && inProg == "y")
                 {
                     InProgress = true;
+
+                    Topic uusi = new Topic()
+                    {
+                        //Id = Id,
+                        Description = Description,
+                        Title = Title,
+                        TimeToMaster = TimeToMaster,
+                        TimeSpent = TimeSpent,
+                        Source = Source,
+                        StartLearningDate = StartLearningDate,
+                        InProgress = InProgress,
+                    };
+
+
+                    //Console.WriteLine("Id: {0}", Id);
+                    Console.WriteLine("Title: {0}", Title);
+                    Console.WriteLine("Description: {0}", Description);
+                    Console.WriteLine("Estimated time to complete: {0}", TimeToMaster);
+                    Console.WriteLine("Time spent: {0}", TimeSpent);
+                    Console.WriteLine("Source: {0}", Source);
+                    Console.WriteLine("Start date: {0}", StartLearningDate);
+                    Console.WriteLine("Topic in progress: {0}", InProgress);
+
+                    // ClassLibrary joka kertoo josko projekti on ajallaan tai jäänyt jälkeen
+
+                    if (Harjoitus.Class1.OverDueOrNot(StartLearningDate, TimeToMaster) == true)
+                    {
+                        Console.WriteLine("Projekti on myöhästynyt");
+                    }
+                    else
+                    {
+
+                        Console.WriteLine("Projekti on ajallaan");
+                    }
+
+
+                    conn.Topics.Add(uusi);
+
+
+
                 }
                 else
                 {
                     Console.WriteLine("Invalid value");
                 }
 
-                //Console.WriteLine("Enter a completion date (dd/mm/yyyy)");
-                //DateTime date1 = DateTime.Parse(Console.ReadLine());
-                //string formatted1 = date1.ToString("dd-MM-yyyy");
-                //DateTime CompletionDate1 = Convert.ToDateTime(formatted1);
-                //CompletionDate = CompletionDate1;
 
-
-
-                Topic uusi = new Topic()
-                {
-                    //Id = Id,
-                    Description = Description,
-                    Title = Title,
-                    TimeToMaster = TimeToMaster,
-                    TimeSpent = TimeSpent,
-                    Source = Source,
-                    StartLearningDate = StartLearningDate,
-                    InProgress = InProgress,
-                    //CompletionDate = CompletionDate
-                };
-
-                conn.Topics.Add(uusi);
-                var tulostus = conn.Topics.Select(t => t);
-
-                foreach (var i in tulostus)
-                {
-                    Console.WriteLine("Id: {0}", i.Id);
-                    Console.WriteLine("Title: {0}", i.Title);
-                    Console.WriteLine("Description: {0}", i.Description);
-                    Console.WriteLine("Estimated time to complete: {0}", i.TimeToMaster);
-                    Console.WriteLine("Time spent: {0}", i.TimeSpent);
-                    Console.WriteLine("Source: {0}", i.Source);
-                    Console.WriteLine("Start date: {0}", i.StartLearningDate);
-                    Console.WriteLine("Topic in progress: {0}", i.InProgress);
-
-                }
-
-                // ClassLibrary joka kertoo josko projekti on ajallaan tai jäänyt jälkeen
-
-                if (Harjoitus.Class1.OverDueOrNot(StartLearningDate, TimeToMaster) == true)
-                {
-                    Console.WriteLine("Projekti on myöhästynyt");
-                }
-                else
-                {
-
-                    Console.WriteLine("Projekti on ajallaan");
-                }
-
-
-
-                await conn.SaveChangesAsync();
+                conn.SaveChanges();
             }
         }
 
